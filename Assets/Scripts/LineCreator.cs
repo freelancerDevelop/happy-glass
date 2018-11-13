@@ -7,7 +7,8 @@ public class LineCreator : MonoBehaviour
 {
     public GameObject linePrefab;
     public GameObject Pencil;
-    float pencilRotateStep = 3f;
+    public StarSlider starSlider;
+    float pencilRotateStep = 3f,lengthActiveLine=0;
     GameObject activeLine;
     
     void Update()
@@ -20,6 +21,8 @@ public class LineCreator : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
+            Debug.Log(lengthActiveLine);
+            lengthActiveLine = 0;
             AddCollider();
             activeLine = null;
             Pencil.GetComponent<SpriteRenderer>().DOFade(0, 0.3f);
@@ -33,7 +36,6 @@ public class LineCreator : MonoBehaviour
     }
     void AddCollider()
     {
-        
         GetComponent<LineRenderer>().enabled = false;
         PolygonCollider2D pg = activeLine.GetComponent<PolygonCollider2D>();
         LineRenderer lr = activeLine.GetComponent<LineRenderer>();
@@ -68,7 +70,7 @@ public class LineCreator : MonoBehaviour
             PencilRotation(point);
         }
         else 
-        if (Vector2.Distance(point, lr.GetPosition(lr.positionCount - 1)) > 0.1f){
+        if (Vector2.Distance(point, lr.GetPosition(lr.positionCount - 1)) > 0.15f){
             RaycastHit2D hit = Physics2D.Raycast(lr.GetPosition(lr.positionCount - 1), point - (Vector2)lr.GetPosition(lr.positionCount - 1),Vector2.Distance(point,lr.GetPosition(lr.positionCount - 1)));
             if (hit.collider != null)
             {
@@ -79,6 +81,8 @@ public class LineCreator : MonoBehaviour
             }
             else
             {
+                starSlider.Drawed(Vector2.Distance(point, lr.GetPosition(lr.positionCount - 1)));
+                lengthActiveLine += Vector2.Distance(point, lr.GetPosition(lr.positionCount - 1));
                 GetComponent<LineRenderer>().enabled = false;
                 lr.positionCount++;
                 lr.SetPosition(lr.positionCount - 1, point);
