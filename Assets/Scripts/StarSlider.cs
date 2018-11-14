@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class StarSlider : MonoBehaviour {
     float threeStarLength, lengthDrawed = 0;
+    public int starNum = 3;
     public void setThreeStarLength(float tsl)
     {
         threeStarLength = tsl;
@@ -16,16 +17,18 @@ public class StarSlider : MonoBehaviour {
         if(GetComponent<Image>().fillAmount>0.66&& (threeStarLength * 3 - lengthDrawed) / (threeStarLength * 3) <= 0.66)
         {
             transform.GetChild(2).GetChild(0).GetComponent<Image>().DOFade(0,0.3f);
+            starNum--;
         }
         if (GetComponent<Image>().fillAmount > 0.33 && (threeStarLength * 3 - lengthDrawed) / (threeStarLength * 3) <= 0.33)
         {
             transform.GetChild(1).GetChild(0).GetComponent<Image>().DOFade(0, 0.3f);
+            starNum--;
         }
         if (GetComponent<Image>().fillAmount > 0 && (threeStarLength * 3 - lengthDrawed) / (threeStarLength * 3) <= 0)
         {
             transform.GetChild(0).GetChild(0).GetComponent<Image>().DOFade(0, 0.3f);
+            starNum--;
         }
         GetComponent<Image>().fillAmount = (threeStarLength * 3 - lengthDrawed) / (threeStarLength * 3);
-        
     }
 }

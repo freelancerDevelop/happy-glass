@@ -52,7 +52,7 @@ Rigidbody2D:
   m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 1
+  m_UseAutoMass: 0
   m_Mass: 3
   m_LinearDrag: 0
   m_AngularDrag: 0
@@ -60,7 +60,7 @@ Rigidbody2D:
   m_Material: {fileID: 6200000, guid: 6f9d8d478592f0e4397947c29c6b748f, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!60 &60287520907295318
 PolygonCollider2D:

@@ -10,7 +10,6 @@ public class LineCreator : MonoBehaviour
     public StarSlider starSlider;
     float pencilRotateStep = 3f,lengthActiveLine=0;
     GameObject activeLine;
-    
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -72,7 +71,7 @@ public class LineCreator : MonoBehaviour
         else 
         if (Vector2.Distance(point, lr.GetPosition(lr.positionCount - 1)) > 0.15f){
             RaycastHit2D hit = Physics2D.Raycast(lr.GetPosition(lr.positionCount - 1), point - (Vector2)lr.GetPosition(lr.positionCount - 1),Vector2.Distance(point,lr.GetPosition(lr.positionCount - 1)));
-            if (hit.collider != null)
+            if (hit.collider != null&& hit.collider.gameObject.layer!=LayerMask.NameToLayer("Liquid"))
             {
                 GetComponent<LineRenderer>().enabled = true;
                 GetComponent<LineRenderer>().SetPosition(0, lr.GetPosition(lr.positionCount - 1));
