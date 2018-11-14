@@ -7,7 +7,6 @@ public class Pump : MonoBehaviour {
 
     public GameObject Droplet;
     public int AmountOfWater;
-    public UnityEvent Completed;
     // Use this for initialization
 	IEnumerator xaNuocTuTu()
     {
@@ -16,7 +15,7 @@ public class Pump : MonoBehaviour {
             Instantiate(Droplet, transform.position + new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f)), Quaternion.identity, transform);
             yield return new WaitForSeconds(0.02f);
         }
-        Completed.Invoke();
+        GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().CountDown();
     }
 	// Update is called once per frame
 	void Update () {

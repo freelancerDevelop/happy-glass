@@ -17,6 +17,8 @@ public class Cup : MonoBehaviour {
         {
             transform.GetChild(1).gameObject.SetActive(false);
             transform.GetChild(2).gameObject.SetActive(true);
+            Debug.Log("Day nuoc");
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().DayNuoc();
         }
     }
 }

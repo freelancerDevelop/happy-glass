@@ -688,7 +688,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Droplet: {fileID: 1624607702375872, guid: 42337375f9d914eea973adb4ec631f17, type: 2}
-  AmountOfWater: 30
+  AmountOfWater: 50
   Completed:
     m_PersistentCalls:
       m_Calls:
