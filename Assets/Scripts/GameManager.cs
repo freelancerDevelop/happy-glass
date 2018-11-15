@@ -14,8 +14,9 @@ public enum GameStatus
 public class GameManager : MonoBehaviour {
     public Text txtLevel,txtCountDown;
     public StarSlider starSlider;
-    public List<GameObject> listLevel;
     public GameObject FullWaterEffect;
+    public List<GameObject> listLevel;
+    
     GameStatus GameStatus=GameStatus.PLAYING;
     int numCup = 0;
 	// Use this for initialization
@@ -23,18 +24,16 @@ public class GameManager : MonoBehaviour {
         txtLevel.text = PlayerPrefs.GetInt("curLevel",1).ToString();
         Instantiate(listLevel[PlayerPrefs.GetInt("curLevel", 1) - 1],transform);
         starSlider.setThreeStarLength(GetComponentInChildren<LevelInfo>().ThreeStarLength);
+        SceneTransition.Instance.Out();
 	}
-    public void ClearAllData()
-    {
-        PlayerPrefs.DeleteAll();
-    }
+  
     public void ReplayClick()
     {
-        SceneManager.LoadScene("MainGame");
+        SceneTransition.Instance.LoadScene("MainGame", TransitionType.FadeToBlack);
     }
     public void HomeClick()
     {
-        SceneManager.LoadScene("Menu");
+        SceneTransition.Instance.LoadScene("Menu", TransitionType.FadeToBlack);
     }
     public void DayNuoc(Vector2 cupPosition)
     {
@@ -53,7 +52,7 @@ public class GameManager : MonoBehaviour {
         txtCountDown.DOKill();
         txtCountDown.DOFade(0f, 0.3f);
         yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene("Victory");
+        SceneTransition.Instance.LoadScene("Victory", TransitionType.WaterLogo);
     }
     public void CountDown()
     {

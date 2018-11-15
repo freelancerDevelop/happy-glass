@@ -11,6 +11,7 @@ public class VictoryManager : MonoBehaviour {
     public static int numStar=0;
     IEnumerator Start()
     {
+        SceneTransition.Instance.Out();
         txtLevel.text = PlayerPrefs.GetInt("curLevel", 1).ToString();
         for (int i = 0; i < numStar; i++)
         {
@@ -31,26 +32,26 @@ public class VictoryManager : MonoBehaviour {
     }
     public void NextLevel()
     {
-        if (PlayerPrefs.GetInt("curLevel", 1) < 12)
+        if (PlayerPrefs.GetInt("curLevel", 1) < 18)
         {
             PlayerPrefs.SetInt("curLevel", PlayerPrefs.GetInt("curLevel", 1)+1);
-            SceneManager.LoadScene("MainGame");
+            PlayAgain();
         }
         else
         {
-            SceneManager.LoadScene("ChooseLevel");
+            ChooseLevel();
         }
     }
     public void HomeClick()
     {
-        SceneManager.LoadScene("Menu");
+        SceneTransition.Instance.LoadScene("Menu", TransitionType.FadeToBlack);
     }
     public void PlayAgain()
     {
-        SceneManager.LoadScene("MainGame");
+        SceneTransition.Instance.LoadScene("MainGame", TransitionType.WaterLogo);
     }
     public void ChooseLevel()
     {
-        SceneManager.LoadScene("ChooseLevel");
+        SceneTransition.Instance.LoadScene("ChooseLevel", TransitionType.FadeToBlack);
     }
 }
