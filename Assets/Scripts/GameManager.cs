@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
     public Text txtLevel,txtCountDown;
     public StarSlider starSlider;
     public List<GameObject> listLevel;
+    public GameObject FullWaterEffect;
     GameStatus GameStatus=GameStatus.PLAYING;
     int numCup = 0;
 	// Use this for initialization
@@ -35,8 +36,9 @@ public class GameManager : MonoBehaviour {
     {
         SceneManager.LoadScene("Menu");
     }
-    public void DayNuoc()
+    public void DayNuoc(Vector2 cupPosition)
     {
+        Destroy(Instantiate(FullWaterEffect, new Vector2(cupPosition.x, cupPosition.y+0.5f), Quaternion.identity),3);
         numCup++;
         if(numCup==gameObject.GetComponentsInChildren<Cup>().Length)
             StartCoroutine(VictoryIEnumerator());
@@ -46,6 +48,7 @@ public class GameManager : MonoBehaviour {
         if (PlayerPrefs.GetInt("curLevel", 1) == PlayerPrefs.GetInt("LevelOpen", 1)) PlayerPrefs.SetInt("LevelOpen", PlayerPrefs.GetInt("curLevel", 1) + 1); //mở lv
         if (starSlider.starNum > PlayerPrefs.GetInt("star_lv" + PlayerPrefs.GetInt("curLevel", 1), 0))
             PlayerPrefs.SetInt("star_lv" + PlayerPrefs.GetInt("curLevel", 1), starSlider.starNum); //Lưu sao
+        VictoryManager.numStar = starSlider.starNum;
         GameStatus = GameStatus.VICTORY;
         txtCountDown.DOKill();
         txtCountDown.DOFade(0f, 0.3f);
@@ -58,7 +61,7 @@ public class GameManager : MonoBehaviour {
     }
     IEnumerator CountDownIEnumerator()
     {
-        for (int i = 10; i >=1; i--)
+        for (int i = 8; i >=1; i--)
         {
             txtCountDown.text = i.ToString();
             if (i == 3 && GameStatus != GameStatus.VICTORY) txtCountDown.DOFade(0.7f, 0.1f);

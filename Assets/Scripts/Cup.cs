@@ -10,6 +10,7 @@ public class Cup : MonoBehaviour {
         if (Input.GetMouseButtonUp(0))
             GetComponent<Rigidbody2D>().isKinematic = false;
         int count= Physics2D.OverlapCollider(PolygonInsideCup, LiquidFilter, res);
+        Debug.Log(count);
         if (count > 0 && transform.GetChild(0).gameObject.active)
         {
             transform.GetChild(0).gameObject.SetActive(false);
@@ -20,7 +21,7 @@ public class Cup : MonoBehaviour {
             transform.GetChild(1).gameObject.SetActive(false);
             transform.GetChild(2).gameObject.SetActive(true);
             Debug.Log("Day nuoc");
-            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().DayNuoc();
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().DayNuoc(transform.position);
         }
     }
 }

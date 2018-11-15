@@ -20,7 +20,7 @@ public class LineCreator : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
-            Debug.Log(lengthActiveLine);
+            Debug.Log("Line Length: "+lengthActiveLine);
             lengthActiveLine = 0;
             AddCollider();
             activeLine = null;

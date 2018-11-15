@@ -2045,6 +2045,7 @@ MonoBehaviour:
   - {fileID: 1723921961616570, guid: fbb6e835628a1db4faa2084ea3b23dd0, type: 2}
   - {fileID: 1184345092140184, guid: aea791bf39dca1a49819b8f1e6328cf8, type: 2}
   - {fileID: 1772992041643376, guid: 73e25003407638a4ba3be8ba5034dadc, type: 2}
+  FullWaterEffect: {fileID: 164112, guid: a54f4434684ca0143bf644289de35374, type: 2}
 --- !u!4 &1889830855
 Transform:
   m_ObjectHideFlags: 0
