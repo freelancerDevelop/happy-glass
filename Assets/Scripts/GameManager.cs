@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -44,13 +45,21 @@ public class GameManager : MonoBehaviour {
     }
     IEnumerator VictoryIEnumerator()
     {
-        if (PlayerPrefs.GetInt("curLevel", 1) == PlayerPrefs.GetInt("LevelOpen", 1)) PlayerPrefs.SetInt("LevelOpen", PlayerPrefs.GetInt("curLevel", 1) + 1); //mở lv
+        if (PlayerPrefs.GetInt("curLevel", 1) == PlayerPrefs.GetInt("LevelOpen", 1))
+            PlayerPrefs.SetInt("LevelOpen", PlayerPrefs.GetInt("LevelOpen", 1) + 1); //mở lv
         if (starSlider.starNum > PlayerPrefs.GetInt("star_lv" + PlayerPrefs.GetInt("curLevel", 1), 0))
             PlayerPrefs.SetInt("star_lv" + PlayerPrefs.GetInt("curLevel", 1), starSlider.starNum); //Lưu sao
         VictoryManager.numStar = starSlider.starNum;
         GameStatus = GameStatus.VICTORY;
         txtCountDown.DOKill();
         txtCountDown.DOFade(0f, 0.3f);
+        //Save preview
+        yield return new WaitForSeconds(0.15f);
+        yield return new WaitForEndOfFrame();
+        Texture2D tex = new Texture2D(Screen.width, Screen.width);
+        tex.ReadPixels(new Rect(0, (Screen.height-Screen.width)/2, Screen.width, Screen.width),0,0);
+        tex.Apply();
+        File.WriteAllBytes(Application.persistentDataPath + "/" + PlayerPrefs.GetInt("curLevel", 1) + ".png", tex.EncodeToPNG());
         yield return new WaitForSeconds(2f);
         SceneTransition.Instance.LoadScene("Victory", TransitionType.WaterLogo);
     }
