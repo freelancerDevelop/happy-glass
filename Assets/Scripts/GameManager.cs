@@ -17,17 +17,30 @@ public class GameManager : MonoBehaviour {
     public StarSlider starSlider;
     public GameObject FullWaterEffect;
     public List<GameObject> listLevel;
-    
     GameStatus GameStatus=GameStatus.PLAYING;
     int numCup = 0;
 	// Use this for initialization
-	void Start () {
-        txtLevel.text = PlayerPrefs.GetInt("curLevel",1).ToString();
-        Instantiate(listLevel[PlayerPrefs.GetInt("curLevel", 1) - 1],transform);
+	IEnumerator Start () {
+        if (transform.childCount==0)
+        {
+            txtLevel.text = PlayerPrefs.GetInt("curLevel", 1).ToString();
+            Instantiate(listLevel[PlayerPrefs.GetInt("curLevel", 1) - 1], transform);
+        }
+        else
+        {
+            txtLevel.text = "...";
+        }
         starSlider.setThreeStarLength(GetComponentInChildren<LevelInfo>().ThreeStarLength);
         SceneTransition.Instance.Out();
-	}
-  
+        yield return new WaitForSeconds(0.95f);
+        #if UNITY_EDITOR
+            SavePeviewClick();
+        #endif
+    }
+    public void SavePeviewClick()
+    {
+        StartCoroutine(TakeScreenShot(Application.streamingAssetsPath));
+    }
     public void ReplayClick()
     {
         SceneTransition.Instance.LoadScene("MainGame", TransitionType.FadeToBlack);
@@ -54,14 +67,37 @@ public class GameManager : MonoBehaviour {
         txtCountDown.DOKill();
         txtCountDown.DOFade(0f, 0.3f);
         //Save preview
-        yield return new WaitForSeconds(0.15f);
-        yield return new WaitForEndOfFrame();
-        Texture2D tex = new Texture2D(Screen.width, Screen.width);
-        tex.ReadPixels(new Rect(0, (Screen.height-Screen.width)/2, Screen.width, Screen.width),0,0);
-        tex.Apply();
-        File.WriteAllBytes(Application.persistentDataPath + "/" + PlayerPrefs.GetInt("curLevel", 1) + ".png", tex.EncodeToPNG());
+        yield return new WaitForSeconds(0.1f);
+        StartCoroutine(TakeScreenShot(Application.persistentDataPath));
         yield return new WaitForSeconds(2f);
         SceneTransition.Instance.LoadScene("Victory", TransitionType.WaterLogo);
+    }
+    private Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight)
+    {
+        Texture2D result = new Texture2D(targetWidth, targetHeight, source.format, false);
+        float incX = (1.0f / (float)targetWidth);
+        float incY = (1.0f / (float)targetHeight);
+        for (int i = 0; i < result.height; ++i)
+        {
+            for (int j = 0; j < result.width; ++j)
+            {
+                Color newColor = source.GetPixelBilinear((float)j / (float)result.width, (float)i / (float)result.height);
+                result.SetPixel(j, i, newColor);
+            }
+        }
+        result.Apply();
+        return result;
+    }
+    IEnumerator TakeScreenShot(string path)
+    {
+        yield return new WaitForEndOfFrame();
+        Texture2D tex = new Texture2D(Screen.width, Screen.width);
+        tex.ReadPixels(new Rect(0, (Screen.height - Screen.width) / 2, Screen.width, Screen.width), 0, 0);
+        tex = ScaleTexture(tex, 200, 200);
+        tex.Apply();
+        File.WriteAllBytes(path + "/" + PlayerPrefs.GetInt("curLevel", 1) + ".jpg", tex.EncodeToJPG(50));
+        Debug.Log("Save to:" + path);
+
     }
     public void CountDown()
     {

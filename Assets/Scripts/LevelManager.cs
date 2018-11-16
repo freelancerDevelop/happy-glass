@@ -9,50 +9,11 @@ public class LevelManager : MonoBehaviour {
     public GameObject btnLvPrefab,btnLvContainer;
     // Use this for initialization
     void Start() {
-        if (!File.Exists(Application.persistentDataPath + "/1.png"))
-        {
-#if UNITY_ANDROID
-            for (int i = 1; i <= 18; i++)
-            {
-                var loadDb = new WWW("jar:file://" + Application.dataPath + "!/assets/" + i + ".png");  // this is the path to your StreamingAssets in android
-                while (!loadDb.isDone) { }  // CAREFUL here, for safety reasons you shouldn't let this while loop unattended, place a timer and error check
-                                            // then save to Application.persistentDataPath
-                File.WriteAllBytes(Application.persistentDataPath + "/" + i + ".png", loadDb.bytes);
-            }
-#endif
-#if UNITY_EDITOR
-            for (int i = 1; i <= 18; i++)
-            {
-                File.Copy(@"Assets/StreamingAssets/"+i+".png", Application.persistentDataPath + "/" + i + ".png");
-            }
-#endif
-        }
-        /*#if UNITY_EDITOR
-                    var dbPath = Application.persistentDataPath;
-        #else
-                        // check if file exists in Application.persistentDataPath
-                        var dbPath = Application.persistentDataPath;
-                        if (!File.Exists(dbPath+"/1.png"))
-                        {
-                            Debug.Log("Previews not in Persistent path");
-                            // if it doesn't ->
-                            // open StreamingAssets directory and load the db ->
-        #if UNITY_ANDROID
-                               for (int i = 1; i <=18; i++)
-                                {
-                                    var loadDb = new WWW("jar:file://" + Application.dataPath + "!/assets/"+i+".png");  // this is the path to your StreamingAssets in android
-                                    while (!loadDb.isDone) { }  // CAREFUL here, for safety reasons you shouldn't let this while loop unattended, place a timer and error check
-                                    // then save to Application.persistentDataPath
-                                    File.WriteAllBytes(dbPath+"/"+i+".png", loadDb.bytes);
-                                }                       
-        #endif
-                        }
-        #endif*/
         for (int i = 1; i <=18; i++)
         {
             GameObject btn=Instantiate(btnLvPrefab, btnLvContainer.transform);
             btn.GetComponentInChildren<Text>().text = i.ToString();
-            btn.GetComponent<Image>().sprite = LoadSprite(Application.persistentDataPath + "/" + i + ".png");
+            btn.GetComponent<Image>().sprite = LoadPreview(i);
             int lvIdx = i;
             btn.GetComponent<Button>().onClick.AddListener(delegate { btnLvClick(lvIdx); });
             if(i<PlayerPrefs.GetInt("LevelOpen", 1))
@@ -76,15 +37,27 @@ public class LevelManager : MonoBehaviour {
         }
         SceneTransition.Instance.Out();
     }
-    private Sprite LoadSprite(string path)
+    Sprite LoadPreview(int lv)
     {
-        if (string.IsNullOrEmpty(path)) return null;
-        if (System.IO.File.Exists(path))
+        if (!File.Exists(Application.persistentDataPath + "/"+lv+".jpg"))
         {
-            byte[] bytes = System.IO.File.ReadAllBytes(path);
+#if UNITY_ANDROID
+                var loadDb = new WWW("jar:file://" + Application.dataPath + "!/assets/" + lv + ".jpg");  // this is the path to your StreamingAssets in android
+                while (!loadDb.isDone) { }  // CAREFUL here, for safety reasons you shouldn't let this while loop unattended, place a timer and error check
+                if(string.IsNullOrEmpty(loadDb.error))
+                    File.WriteAllBytes(Application.persistentDataPath + "/" + lv + ".jpg", loadDb.bytes);
+#endif
+#if UNITY_EDITOR
+            if(File.Exists(@"Assets/StreamingAssets/" + lv + ".jpg"))
+                File.Copy(@"Assets/StreamingAssets/" + lv + ".jpg", Application.persistentDataPath + "/" + lv + ".jpg", true);
+#endif
+        }
+        if (File.Exists(Application.persistentDataPath + "/" + lv + ".jpg"))
+        {
+            byte[] bytes = File.ReadAllBytes(Application.persistentDataPath + "/" + lv + ".jpg");
             Texture2D texture = new Texture2D(1, 1);
             texture.LoadImage(bytes);
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f),100);
+            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100);
             return sprite;
         }
         return null;

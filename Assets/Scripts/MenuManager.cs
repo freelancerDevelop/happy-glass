@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,6 +23,8 @@ public class MenuManager : MonoBehaviour {
     }
     public void ClearAllData()
     {
+        DirectoryInfo dataDir = new DirectoryInfo(Application.persistentDataPath);
+        dataDir.Delete(true);
         PlayerPrefs.DeleteAll();
     }
 }
