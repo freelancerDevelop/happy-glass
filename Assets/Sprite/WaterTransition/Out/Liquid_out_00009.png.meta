@@ -97,12 +97,12 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: dd33eb912abd06c41bb0c77b3059e162
     vertices: []
     indices: 
     edges: []
     weights: []
-  spritePackingTag: 
+  spritePackingTag: WaterTransition
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
   userData: 

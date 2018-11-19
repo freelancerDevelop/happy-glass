@@ -19,6 +19,13 @@ public class VictoryManager : MonoBehaviour {
             yield return new WaitForSeconds(0.3f);
         }
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            HomeClick();
+        }
+    }
     IEnumerator StarExplosion(int i)
     {
         yield return new WaitForSeconds(2);
@@ -32,7 +39,7 @@ public class VictoryManager : MonoBehaviour {
     }
     public void NextLevel()
     {
-        if (PlayerPrefs.GetInt("curLevel", 1) < 18)
+        if (PlayerPrefs.GetInt("curLevel", 1) < 34)
         {
             PlayerPrefs.SetInt("curLevel", PlayerPrefs.GetInt("curLevel", 1)+1);
             PlayAgain();

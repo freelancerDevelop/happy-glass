@@ -14,7 +14,7 @@ public class Pump : MonoBehaviour {
         {
             GameObject obj=Instantiate(Droplet, transform.position + new Vector3(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f)), Quaternion.identity, transform);
             
-            obj.GetComponent<Rigidbody2D>().AddForce(new Vector2(Mathf.Sin(transform.eulerAngles.z*Mathf.PI/180), -Mathf.Cos(transform.eulerAngles.z * Mathf.PI / 180))*2f);
+            obj.GetComponent<Rigidbody2D>().AddForce(new Vector2(Mathf.Sin(transform.eulerAngles.z*Mathf.PI/180), -Mathf.Cos(transform.eulerAngles.z * Mathf.PI / 180))*1.2f);
             yield return new WaitForSeconds(0.02f);
         }
         GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().CountDown();

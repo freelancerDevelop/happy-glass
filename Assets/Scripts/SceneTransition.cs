@@ -15,6 +15,7 @@ public class SceneTransition : MonoBehaviour {
     bool isTransition = true;
     public void LoadScene(string s,TransitionType transitionType)
     {
+        Debug.Log("SceneLoad");
         if (!isTransition)
         {
             activeTransitionType = transitionType;

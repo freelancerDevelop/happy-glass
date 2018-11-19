@@ -64,6 +64,7 @@ public class LineCreator : MonoBehaviour
         LineRenderer lr = activeLine.GetComponent<LineRenderer>();
         if (lr.positionCount == 0)
         {
+
             lr.positionCount++;
             lr.SetPosition(lr.positionCount - 1, point);
             PencilRotation(point);

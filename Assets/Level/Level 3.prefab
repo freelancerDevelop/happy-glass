@@ -551,7 +551,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a5a207890249424fa19466e86f53382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ThreeStarLength: 14
+  ThreeStarLength: 12
 --- !u!114 &114087683693122360
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -564,7 +564,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Droplet: {fileID: 1624607702375872, guid: 42337375f9d914eea973adb4ec631f17, type: 2}
-  AmountOfWater: 40
+  AmountOfWater: 60
 --- !u!114 &114411501688454404
 MonoBehaviour:
   m_ObjectHideFlags: 1

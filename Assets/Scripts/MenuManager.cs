@@ -11,10 +11,18 @@ public class MenuManager : MonoBehaviour {
         Application.targetFrameRate = 60;
         SceneTransition.Instance.Out();
     }
-	
-	public void StartClick()
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+    public void StartClick()
     {
         //SceneManager.LoadScene("MainGame");
+        
         SceneTransition.Instance.LoadScene("MainGame",TransitionType.WaterLogo);
     }
     public void ChooseLevelClick()

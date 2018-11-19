@@ -15,39 +15,58 @@ public enum GameStatus
 public class GameManager : MonoBehaviour {
     public Text txtLevel,txtCountDown;
     public StarSlider starSlider;
-    public GameObject FullWaterEffect;
+    public GameObject FullWaterEffect,EditorButton;
+
     public List<GameObject> listLevel;
     GameStatus GameStatus=GameStatus.PLAYING;
     int numCup = 0;
 	// Use this for initialization
-	IEnumerator Start () {
-        if (transform.childCount==0)
+	void Start () {
+        txtLevel.text = PlayerPrefs.GetInt("curLevel", 1).ToString();
+        Instantiate(listLevel[PlayerPrefs.GetInt("curLevel", 1) - 1], transform);
+        starSlider.setThreeStarLength(GetComponentInChildren<LevelInfo>().ThreeStarLength);
+        SceneTransition.Instance.Out();
+        #if UNITY_EDITOR
+            EditorButton.SetActive(true);
+        #endif
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            txtLevel.text = PlayerPrefs.GetInt("curLevel", 1).ToString();
-            Instantiate(listLevel[PlayerPrefs.GetInt("curLevel", 1) - 1], transform);
+            HomeClick();
+        }
+    }
+    public void ChooseLevel()
+    {
+        SceneTransition.Instance.LoadScene("ChooseLevel", TransitionType.FadeToBlack);
+    }
+    public void NextLevel()
+    {
+        if (PlayerPrefs.GetInt("curLevel", 1) < 34)
+        {
+            PlayerPrefs.SetInt("curLevel", PlayerPrefs.GetInt("curLevel", 1) + 1);
+            ReplayClick();
         }
         else
         {
-            txtLevel.text = "...";
+            ChooseLevel();
         }
-        starSlider.setThreeStarLength(GetComponentInChildren<LevelInfo>().ThreeStarLength);
-        SceneTransition.Instance.Out();
-        yield return new WaitForSeconds(0.95f);
-        #if UNITY_EDITOR
-            SavePeviewClick();
-        #endif
     }
     public void SavePeviewClick()
     {
         StartCoroutine(TakeScreenShot(Application.streamingAssetsPath));
     }
+
     public void ReplayClick()
     {
-        SceneTransition.Instance.LoadScene("MainGame", TransitionType.FadeToBlack);
+        if (GameStatus == GameStatus.PLAYING)
+            SceneTransition.Instance.LoadScene("MainGame", TransitionType.FadeToBlack);
     }
     public void HomeClick()
     {
-        SceneTransition.Instance.LoadScene("Menu", TransitionType.FadeToBlack);
+        if(GameStatus==GameStatus.PLAYING)
+            SceneTransition.Instance.LoadScene("Menu", TransitionType.FadeToBlack);
     }
     public void DayNuoc(Vector2 cupPosition)
     {
@@ -67,9 +86,10 @@ public class GameManager : MonoBehaviour {
         txtCountDown.DOKill();
         txtCountDown.DOFade(0f, 0.3f);
         //Save preview
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.12f);
         StartCoroutine(TakeScreenShot(Application.persistentDataPath));
         yield return new WaitForSeconds(2f);
+        Debug.Log("Save to:" + Application.persistentDataPath);
         SceneTransition.Instance.LoadScene("Victory", TransitionType.WaterLogo);
     }
     private Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight)
@@ -93,9 +113,9 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForEndOfFrame();
         Texture2D tex = new Texture2D(Screen.width, Screen.width);
         tex.ReadPixels(new Rect(0, (Screen.height - Screen.width) / 2, Screen.width, Screen.width), 0, 0);
-        tex = ScaleTexture(tex, 200, 200);
+        tex = ScaleTexture(tex, 300, 300);
         tex.Apply();
-        File.WriteAllBytes(path + "/" + PlayerPrefs.GetInt("curLevel", 1) + ".jpg", tex.EncodeToJPG(50));
+        File.WriteAllBytes(path + "/" + PlayerPrefs.GetInt("curLevel", 1) + ".jpg", tex.EncodeToJPG(90));
         Debug.Log("Save to:" + path);
 
     }
@@ -105,7 +125,7 @@ public class GameManager : MonoBehaviour {
     }
     IEnumerator CountDownIEnumerator()
     {
-        for (int i = 8; i >=1; i--)
+        for (int i = 6; i >=1; i--)
         {
             txtCountDown.text = i.ToString();
             if (i == 3 && GameStatus != GameStatus.VICTORY) txtCountDown.DOFade(0.7f, 0.1f);

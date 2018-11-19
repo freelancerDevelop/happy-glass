@@ -567,23 +567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Droplet: {fileID: 1624607702375872, guid: 42337375f9d914eea973adb4ec631f17, type: 2}
-  AmountOfWater: 40
-  Completed:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  AmountOfWater: 60
 --- !u!114 &114462548173889812
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -610,7 +594,6 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 0
     maxNormalAngle: 0
-  checkGravityScale: 0
 --- !u!114 &114943564500662494
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -622,7 +605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a5a207890249424fa19466e86f53382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ThreeStarLength: 14
+  ThreeStarLength: 5
 --- !u!212 &212023751903948510
 SpriteRenderer:
   m_ObjectHideFlags: 1

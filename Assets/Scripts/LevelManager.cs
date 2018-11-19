@@ -9,7 +9,7 @@ public class LevelManager : MonoBehaviour {
     public GameObject btnLvPrefab,btnLvContainer;
     // Use this for initialization
     void Start() {
-        for (int i = 1; i <=18; i++)
+        for (int i = 1; i <=34; i++)
         {
             GameObject btn=Instantiate(btnLvPrefab, btnLvContainer.transform);
             btn.GetComponentInChildren<Text>().text = i.ToString();
@@ -27,7 +27,9 @@ public class LevelManager : MonoBehaviour {
             }
             else if (i > PlayerPrefs.GetInt("LevelOpen", 1))
             {
-                btn.GetComponent<Button>().interactable = false;
+                #if !UNITY_EDITOR
+                    btn.GetComponent<Button>().interactable = false;
+                #endif
                 btn.transform.GetChild(6).gameObject.SetActive(false);
             }
             for (int j = 0; j < PlayerPrefs.GetInt("star_lv"+i, 0); j++)
@@ -36,6 +38,13 @@ public class LevelManager : MonoBehaviour {
             }
         }
         SceneTransition.Instance.Out();
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            homeClick();
+        }
     }
     Sprite LoadPreview(int lv)
     {
