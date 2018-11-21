@@ -10,11 +10,16 @@ public class LineCreator : MonoBehaviour
     public StarSlider starSlider;
     float pencilRotateStep = 3f,lengthActiveLine=0;
     GameObject activeLine;
+    AudioSource audioSource;
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            activeLine = Instantiate(linePrefab);
+            activeLine = Instantiate(linePrefab,transform);
             Pencil.GetComponent<SpriteRenderer>().DOFade(1, 0.3f);
         }
 
@@ -55,6 +60,8 @@ public class LineCreator : MonoBehaviour
                 pg.SetPath(pg.pathCount - 1, rect);
             }
             activeLine.GetComponent<Rigidbody2D>().isKinematic = false;
+            if (GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().GameStatus == GameStatus.WAITING)
+                GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().GameStatus = GameStatus.PLAYING;
         }
         else Destroy(activeLine);
         
@@ -64,15 +71,18 @@ public class LineCreator : MonoBehaviour
         LineRenderer lr = activeLine.GetComponent<LineRenderer>();
         if (lr.positionCount == 0)
         {
-
-            lr.positionCount++;
-            lr.SetPosition(lr.positionCount - 1, point);
-            PencilRotation(point);
+            
+            if (Physics2D.OverlapPoint(point)==null)
+            {
+                lr.positionCount++;
+                lr.SetPosition(lr.positionCount - 1, point);
+                PencilRotation(point);
+            }
         }
         else 
         if (Vector2.Distance(point, lr.GetPosition(lr.positionCount - 1)) > 0.15f){
             RaycastHit2D hit = Physics2D.Raycast(lr.GetPosition(lr.positionCount - 1), point - (Vector2)lr.GetPosition(lr.positionCount - 1),Vector2.Distance(point,lr.GetPosition(lr.positionCount - 1)));
-            if (hit.collider != null&& hit.collider.gameObject.layer!=LayerMask.NameToLayer("Liquid"))
+            if ((hit.collider != null && hit.collider.gameObject.layer != LayerMask.NameToLayer("Liquid")) || lengthActiveLine > starSlider.threeStarLength * 3 + 1)
             {
                 GetComponent<LineRenderer>().enabled = true;
                 GetComponent<LineRenderer>().SetPosition(0, lr.GetPosition(lr.positionCount - 1));
@@ -87,15 +97,23 @@ public class LineCreator : MonoBehaviour
                 lr.positionCount++;
                 lr.SetPosition(lr.positionCount - 1, point);
                 PencilRotation(point);
+
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.pitch = Random.Range(0.8f, 1.2f);
+                    audioSource.Play();
+                }
+                
             }
         };
+
         
     }
     void PencilRotation(Vector2 point)
     {
         Pencil.transform.position = point;
         Vector3 pencilAngle = Pencil.transform.localEulerAngles;
-        if (pencilAngle.z < 330f || pencilAngle.z > 340) pencilRotateStep = -pencilRotateStep;
+        if (pencilAngle.z < 330f || pencilAngle.z > 345) pencilRotateStep = -pencilRotateStep;
         pencilAngle.z += pencilRotateStep;
         Pencil.transform.localEulerAngles = pencilAngle;
     }

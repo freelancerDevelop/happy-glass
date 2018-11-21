@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,7 +31,6 @@ public class SceneTransition : MonoBehaviour {
             transform.GetChild(0).GetComponent<Animator>().SetTrigger("in");
             yield return new WaitForSeconds(1);
         }
-            
         if (activeTransitionType == TransitionType.FadeToBlack)
         {
             transform.GetChild(1).GetComponent<Animator>().SetTrigger("in");
@@ -47,6 +47,7 @@ public class SceneTransition : MonoBehaviour {
     {
         if (isTransition)
         {
+            //if(activeTransitionType == TransitionType.WaterLogo) AudioManager.Instance.Play("SceneIn");
             transform.GetChild((int)activeTransitionType).GetComponent<Animator>().SetTrigger("out");
             isTransition = false;
         }

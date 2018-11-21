@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class StarSlider : MonoBehaviour {
-    float threeStarLength, lengthDrawed = 0;
+    public float threeStarLength, lengthDrawed = 0;
     public int starNum = 3;
     public void setThreeStarLength(float tsl)
     {

@@ -73,7 +73,7 @@ public class LevelManager : MonoBehaviour {
     }
     void btnLvClick(int lv)
     {
-        Debug.Log(lv);
+        GetComponent<AudioSource>().Play();
         PlayerPrefs.SetInt("curLevel", lv);
         SceneTransition.Instance.LoadScene("MainGame", TransitionType.WaterLogo);
     }

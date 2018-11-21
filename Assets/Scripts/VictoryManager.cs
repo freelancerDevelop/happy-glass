@@ -26,14 +26,19 @@ public class VictoryManager : MonoBehaviour {
             HomeClick();
         }
     }
+  
     IEnumerator StarExplosion(int i)
     {
         yield return new WaitForSeconds(2);
+        //AudioManager.Instance.Play("star_explosion");
+        GetComponents<AudioSource>()[0].Play();
         Board.transform.GetChild(i).GetChild(0).DOScale(1, 0.8f).SetEase(Ease.OutBounce);
         Destroy(Instantiate(StarBust, Board.transform.GetChild(i).position, Quaternion.identity), 3);
         if (i == 2)
         {
             yield return new WaitForSeconds(0.3f);
+            //AudioManager.Instance.Play("congratulation");
+            GetComponents<AudioSource>()[1].Play();
             Destroy(Instantiate(Confetti, Board.transform.position+Vector3.up*1.8f, Quaternion.identity), 3);
         }
     }

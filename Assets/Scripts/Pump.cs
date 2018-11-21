@@ -10,6 +10,7 @@ public class Pump : MonoBehaviour {
     // Use this for initialization
 	IEnumerator xaNuocTuTu()
     {
+        GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().waterFall();
         for (int i = 0; i < AmountOfWater; i++)
         {
             GameObject obj=Instantiate(Droplet, transform.position + new Vector3(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f)), Quaternion.identity, transform);
@@ -21,7 +22,7 @@ public class Pump : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButtonUp(0) && transform.childCount == 0)
+        if (transform.childCount == 0&&GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().GameStatus==GameStatus.PLAYING)
         {
             StartCoroutine(xaNuocTuTu());
         }

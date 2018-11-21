@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public enum GameStatus
 {
+    WAITING,
     PLAYING,
     VICTORY,
     GAMEOVER
@@ -16,9 +17,8 @@ public class GameManager : MonoBehaviour {
     public Text txtLevel,txtCountDown;
     public StarSlider starSlider;
     public GameObject FullWaterEffect,EditorButton;
-
     public List<GameObject> listLevel;
-    GameStatus GameStatus=GameStatus.PLAYING;
+    public GameStatus GameStatus=GameStatus.WAITING;
     int numCup = 0;
 	// Use this for initialization
 	void Start () {
@@ -36,6 +36,10 @@ public class GameManager : MonoBehaviour {
         {
             HomeClick();
         }
+    }
+    public void waterFall()
+    {
+        GetComponents<AudioSource>()[0].Play();
     }
     public void ChooseLevel()
     {
@@ -60,19 +64,20 @@ public class GameManager : MonoBehaviour {
 
     public void ReplayClick()
     {
-        if (GameStatus == GameStatus.PLAYING)
+        if (GameStatus == GameStatus.PLAYING||GameStatus == GameStatus.WAITING)
             SceneTransition.Instance.LoadScene("MainGame", TransitionType.FadeToBlack);
     }
     public void HomeClick()
     {
-        if(GameStatus==GameStatus.PLAYING)
+        if(GameStatus == GameStatus.PLAYING || GameStatus == GameStatus.WAITING)
             SceneTransition.Instance.LoadScene("Menu", TransitionType.FadeToBlack);
     }
     public void DayNuoc(Vector2 cupPosition)
     {
+        GetComponents<AudioSource>()[1].Play();
         Destroy(Instantiate(FullWaterEffect, new Vector2(cupPosition.x, cupPosition.y+0.5f), Quaternion.identity),3);
         numCup++;
-        if(numCup==gameObject.GetComponentsInChildren<Cup>().Length)
+        if (numCup == gameObject.GetComponentsInChildren<Cup>().Length)
             StartCoroutine(VictoryIEnumerator());
     }
     IEnumerator VictoryIEnumerator()
@@ -89,7 +94,7 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(0.12f);
         StartCoroutine(TakeScreenShot(Application.persistentDataPath));
         yield return new WaitForSeconds(2f);
-        Debug.Log("Save to:" + Application.persistentDataPath);
+        //
         SceneTransition.Instance.LoadScene("Victory", TransitionType.WaterLogo);
     }
     private Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight)
@@ -125,7 +130,7 @@ public class GameManager : MonoBehaviour {
     }
     IEnumerator CountDownIEnumerator()
     {
-        for (int i = 6; i >=1; i--)
+        for (int i = 7; i >=1; i--)
         {
             txtCountDown.text = i.ToString();
             if (i == 3 && GameStatus != GameStatus.VICTORY) txtCountDown.DOFade(0.7f, 0.1f);

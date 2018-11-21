@@ -3,13 +3,37 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour {
 
+    public GameObject droplet;
+    public Button btnAudio;
+    public Sprite audioOn, audioOff;
 	// Use this for initialization
 	void Start () {
+        if (PlayerPrefs.GetInt("audio", 1) == 1)
+        {
+            btnAudio.GetComponent<Image>().sprite = audioOn;
+            AudioListener.volume = 1;
+        }
+        else
+        {
+            btnAudio.GetComponent<Image>().sprite = audioOff;
+            AudioListener.volume = 0;
+        }
         Application.targetFrameRate = 60;
         SceneTransition.Instance.Out();
+        StartCoroutine(waterFall());
+    }
+    IEnumerator waterFall()
+    {
+        for (int i = 0; i < 35; i++)
+        {
+            GameObject obj = Instantiate(droplet,new Vector3(-0.5f,-0.5f,0), Quaternion.identity, transform);
+            obj.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1, 0.3f)*5);
+            yield return new WaitForSeconds(0.02f);
+        }
     }
 
     private void Update()
@@ -17,6 +41,20 @@ public class MenuManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
+        }
+    }
+    public void AudioClick()
+    {
+        PlayerPrefs.SetInt("audio", -PlayerPrefs.GetInt("audio", 1));
+        if (PlayerPrefs.GetInt("audio", 1) == 1)
+        {
+            btnAudio.GetComponent<Image>().sprite = audioOn;
+            AudioListener.volume = 1;
+        }
+        else
+        {
+            btnAudio.GetComponent<Image>().sprite = audioOff;
+            AudioListener.volume = 0;
         }
     }
     public void StartClick()
