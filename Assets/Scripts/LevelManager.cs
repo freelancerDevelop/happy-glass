@@ -9,7 +9,7 @@ public class LevelManager : MonoBehaviour {
     public GameObject btnLvPrefab,btnLvContainer;
     // Use this for initialization
     void Start() {
-        for (int i = 1; i <=34; i++)
+        for (int i = 1; i <=40; i++)
         {
             GameObject btn=Instantiate(btnLvPrefab, btnLvContainer.transform);
             btn.GetComponentInChildren<Text>().text = i.ToString();

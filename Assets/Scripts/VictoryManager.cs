@@ -9,6 +9,7 @@ public class VictoryManager : MonoBehaviour {
     public GameObject Board,StarBust,Confetti;
     public Text txtLevel;
     public static int numStar=0;
+    bool clicked = false;
     IEnumerator Start()
     {
         SceneTransition.Instance.Out();
@@ -44,12 +45,13 @@ public class VictoryManager : MonoBehaviour {
     }
     public void NextLevel()
     {
-        if (PlayerPrefs.GetInt("curLevel", 1) < 34)
+        if (PlayerPrefs.GetInt("curLevel", 1) < 40&&!clicked)
         {
             PlayerPrefs.SetInt("curLevel", PlayerPrefs.GetInt("curLevel", 1)+1);
             PlayAgain();
+            clicked = true;
         }
-        else
+        else if(!clicked)
         {
             ChooseLevel();
         }

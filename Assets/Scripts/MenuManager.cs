@@ -12,6 +12,7 @@ public class MenuManager : MonoBehaviour {
     public Sprite audioOn, audioOff;
 	// Use this for initialization
 	void Start () {
+        Application.targetFrameRate = 60;
         if (PlayerPrefs.GetInt("audio", 1) == 1)
         {
             btnAudio.GetComponent<Image>().sprite = audioOn;
@@ -22,7 +23,7 @@ public class MenuManager : MonoBehaviour {
             btnAudio.GetComponent<Image>().sprite = audioOff;
             AudioListener.volume = 0;
         }
-        Application.targetFrameRate = 60;
+        
         SceneTransition.Instance.Out();
         StartCoroutine(waterFall());
     }

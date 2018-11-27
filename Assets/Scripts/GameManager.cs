@@ -10,6 +10,7 @@ public enum GameStatus
 {
     WAITING,
     PLAYING,
+    PAUSE,
     VICTORY,
     GAMEOVER
 }
@@ -19,16 +20,31 @@ public class GameManager : MonoBehaviour {
     public GameObject FullWaterEffect,EditorButton;
     public List<GameObject> listLevel;
     public GameStatus GameStatus=GameStatus.WAITING;
+    public static bool showHint = true;
     int numCup = 0;
 	// Use this for initialization
 	void Start () {
         txtLevel.text = PlayerPrefs.GetInt("curLevel", 1).ToString();
         Instantiate(listLevel[PlayerPrefs.GetInt("curLevel", 1) - 1], transform);
         starSlider.setThreeStarLength(GetComponentInChildren<LevelInfo>().ThreeStarLength);
+        if (showHint)
+        {
+
+        }
         SceneTransition.Instance.Out();
         #if UNITY_EDITOR
             EditorButton.SetActive(true);
         #endif
+    }
+    public void showHintBoard()
+    {
+        Time.timeScale = 0;
+        GetComponent<AudioSource>().Pause();
+    }
+    public void hideHintBoard()
+    {
+        Time.timeScale = 1;
+        GetComponent<AudioSource>().UnPause();
     }
     private void Update()
     {

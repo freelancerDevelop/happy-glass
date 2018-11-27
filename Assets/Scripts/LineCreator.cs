@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class LineCreator : MonoBehaviour
@@ -15,28 +16,47 @@ public class LineCreator : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
     }
+    public void SaveHintToPrefab()
+    {
+        LineRenderer[] lines = gameObject.GetComponentsInChildren<LineRenderer>();
+        string[] strLines=new string[lines.Length - 2];
+        for (int i = 1; i < lines.Length-1; i++)
+        {
+            Vector3[] points = new Vector3[lines[i].positionCount];
+            lines[i].GetPositions(points);
+            strLines[i - 1] = "";
+            for (int j = 0; j < points.Length; j++)
+            {
+                strLines[i - 1] += points[j].x+" "+ points[j].y + " ";
+            }
+        }
+        File.WriteAllLines(@"Assets/StreamingAssets/test.txt", strLines);
+
+    }
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Time.timeScale==1)
         {
-            activeLine = Instantiate(linePrefab,transform);
-            Pencil.GetComponent<SpriteRenderer>().DOFade(1, 0.3f);
-        }
+            if (Input.GetMouseButtonDown(0))
+            {
+                activeLine = Instantiate(linePrefab, transform);
+                Pencil.GetComponent<SpriteRenderer>().DOFade(1, 0.3f);
+            }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            Debug.Log("Line Length: "+lengthActiveLine);
-            lengthActiveLine = 0;
-            AddCollider();
-            activeLine = null;
-            Pencil.GetComponent<SpriteRenderer>().DOFade(0, 0.3f);
-        }
+            if (Input.GetMouseButtonUp(0))
+            {
+                Debug.Log("Line Length: " + lengthActiveLine);
+                lengthActiveLine = 0;
+                AddCollider();
+                activeLine = null;
+                Pencil.GetComponent<SpriteRenderer>().DOFade(0, 0.3f);
+            }
 
-        if (activeLine != null)
-        {
-            UpdateLine(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            if (activeLine != null)
+            {
+                UpdateLine(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            }
         }
-
     }
     void AddCollider()
     {
