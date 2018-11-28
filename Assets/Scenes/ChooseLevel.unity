@@ -1350,6 +1350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d004162b122f8fd4a967b61830829885, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  txtTotalStar: {fileID: 487225848}
   btnLvPrefab: {fileID: 1310664505015586, guid: 4e5c623b99e8e174cb1be8cf1b051db1,
     type: 2}
   btnLvContainer: {fileID: 1360088639}

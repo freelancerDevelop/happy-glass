@@ -5,11 +5,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class LevelManager : MonoBehaviour {
-
+    public Text txtTotalStar;
     public GameObject btnLvPrefab,btnLvContainer;
     // Use this for initialization
     void Start() {
-        for (int i = 1; i <=40; i++)
+        txtTotalStar.text = PlayerPrefs.GetInt("totalStar", 0).ToString();
+
+        for (int i = 1; i <=GameManager.totalLevel; i++)
         {
             GameObject btn=Instantiate(btnLvPrefab, btnLvContainer.transform);
             btn.GetComponentInChildren<Text>().text = i.ToString();

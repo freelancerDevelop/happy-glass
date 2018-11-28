@@ -66,7 +66,7 @@ public class MenuManager : MonoBehaviour {
     }
     public void ChooseLevelClick()
     {
-        SceneTransition.Instance.LoadScene("ChooseLevel", TransitionType.FadeToBlack);
+        SceneTransition.Instance.LoadScene("ChooseLevel", TransitionType.WaterLogo);
     }
     public void ClearAllData()
     {

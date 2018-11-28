@@ -7,11 +7,13 @@ using UnityEngine.UI;
 
 public class VictoryManager : MonoBehaviour {
     public GameObject Board,StarBust,Confetti;
+    public Text txtTotalStar;
     public Text txtLevel;
     public static int numStar=0;
     bool clicked = false;
     IEnumerator Start()
     {
+        txtTotalStar.text = PlayerPrefs.GetInt("totalStar", 0).ToString();
         SceneTransition.Instance.Out();
         txtLevel.text = PlayerPrefs.GetInt("curLevel", 1).ToString();
         for (int i = 0; i < numStar; i++)
@@ -45,13 +47,13 @@ public class VictoryManager : MonoBehaviour {
     }
     public void NextLevel()
     {
-        if (PlayerPrefs.GetInt("curLevel", 1) < 40&&!clicked)
+        if (PlayerPrefs.GetInt("curLevel", 1) < GameManager.totalLevel && !clicked)
         {
-            PlayerPrefs.SetInt("curLevel", PlayerPrefs.GetInt("curLevel", 1)+1);
+            PlayerPrefs.SetInt("curLevel", PlayerPrefs.GetInt("curLevel", 1) + 1);
             PlayAgain();
             clicked = true;
-        }
-        else if(!clicked)
+        } 
+        else if (!clicked)
         {
             ChooseLevel();
         }
@@ -66,6 +68,6 @@ public class VictoryManager : MonoBehaviour {
     }
     public void ChooseLevel()
     {
-        SceneTransition.Instance.LoadScene("ChooseLevel", TransitionType.FadeToBlack);
+        SceneTransition.Instance.LoadScene("ChooseLevel", TransitionType.WaterLogo);
     }
 }

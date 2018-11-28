@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f84575e8ed518445b3f78b4c603c8fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Smoke: {fileID: 0}
+  Smoke: {fileID: 179974, guid: 56346542eb69e3444bc72d177bc462d8, type: 2}
 --- !u!212 &212006347707041376
 SpriteRenderer:
   m_ObjectHideFlags: 1

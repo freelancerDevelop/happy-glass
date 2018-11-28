@@ -581,6 +581,7 @@ MonoBehaviour:
   Board: {fileID: 598105396}
   StarBust: {fileID: 164832, guid: cc4edba986607ba48b17927b27d25e4e, type: 2}
   Confetti: {fileID: 139308, guid: 1c417f6a98778594d92a7a8883ede96e, type: 2}
+  txtTotalStar: {fileID: 1519193582}
   txtLevel: {fileID: 1025275655}
 --- !u!82 &745601202
 AudioSource:

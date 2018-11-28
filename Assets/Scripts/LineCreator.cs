@@ -30,7 +30,7 @@ public class LineCreator : MonoBehaviour
                 strLines[i - 1] += points[j].x+" "+ points[j].y + " ";
             }
         }
-        File.WriteAllLines(@"Assets/StreamingAssets/test.txt", strLines);
+        File.WriteAllLines(@"Assets/StreamingAssets/hint"+PlayerPrefs.GetInt("curLevel", 1)+".txt", strLines);
 
     }
     void Update()
@@ -91,13 +91,12 @@ public class LineCreator : MonoBehaviour
         LineRenderer lr = activeLine.GetComponent<LineRenderer>();
         if (lr.positionCount == 0)
         {
-            
             if (Physics2D.OverlapPoint(point)==null)
             {
                 lr.positionCount++;
                 lr.SetPosition(lr.positionCount - 1, point);
-                PencilRotation(point);
             }
+            PencilRotation(point);
         }
         else 
         if (Vector2.Distance(point, lr.GetPosition(lr.positionCount - 1)) > 0.15f){
