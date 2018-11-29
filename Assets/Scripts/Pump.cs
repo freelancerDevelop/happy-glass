@@ -22,7 +22,7 @@ public class Pump : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
-        if (transform.childCount == 0&&GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().GameStatus==GameStatus.PLAYING)
+        if (transform.childCount == 0&&GameManager.GameStatus==GameStatus.PLAYING)
         {
             StartCoroutine(xaNuocTuTu());
         }

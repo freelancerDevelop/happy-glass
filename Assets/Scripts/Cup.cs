@@ -7,7 +7,7 @@ public class Cup : MonoBehaviour {
     public ContactFilter2D LiquidFilter;
     Collider2D[] res = new Collider2D[1000];
 	void Update () {
-        if (GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().GameStatus==GameStatus.PLAYING)
+        if (GameManager.GameStatus==GameStatus.PLAYING)
             GetComponent<Rigidbody2D>().isKinematic = false;
 
         int count= Physics2D.OverlapCollider(PolygonInsideCup, LiquidFilter, res);        

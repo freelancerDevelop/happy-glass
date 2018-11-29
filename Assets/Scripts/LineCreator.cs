@@ -10,7 +10,8 @@ public class LineCreator : MonoBehaviour
     public GameObject Pencil;
     public StarSlider starSlider;
     float pencilRotateStep = 3f,lengthActiveLine=0;
-    GameObject activeLine;
+    [HideInInspector]
+    public GameObject activeLine;
     AudioSource audioSource;
     private void Start()
     {
@@ -19,8 +20,8 @@ public class LineCreator : MonoBehaviour
     public void SaveHintToPrefab()
     {
         LineRenderer[] lines = gameObject.GetComponentsInChildren<LineRenderer>();
-        string[] strLines=new string[lines.Length - 2];
-        for (int i = 1; i < lines.Length-1; i++)
+        string[] strLines=new string[lines.Length - 1];
+        for (int i = 1; i < lines.Length; i++)
         {
             Vector3[] points = new Vector3[lines[i].positionCount];
             lines[i].GetPositions(points);
@@ -31,18 +32,17 @@ public class LineCreator : MonoBehaviour
             }
         }
         File.WriteAllLines(@"Assets/StreamingAssets/hint"+PlayerPrefs.GetInt("curLevel", 1)+".txt", strLines);
-
+        Debug.Log("Save Hint");
     }
     void Update()
     {
-        if (Time.timeScale==1)
+        if (Time.timeScale==1&&(GameManager.GameStatus==GameStatus.PLAYING|| GameManager.GameStatus == GameStatus.WAITING))
         {
             if (Input.GetMouseButtonDown(0))
             {
                 activeLine = Instantiate(linePrefab, transform);
                 Pencil.GetComponent<SpriteRenderer>().DOFade(1, 0.3f);
             }
-
             if (Input.GetMouseButtonUp(0))
             {
                 Debug.Log("Line Length: " + lengthActiveLine);
@@ -51,7 +51,6 @@ public class LineCreator : MonoBehaviour
                 activeLine = null;
                 Pencil.GetComponent<SpriteRenderer>().DOFade(0, 0.3f);
             }
-
             if (activeLine != null)
             {
                 UpdateLine(Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -80,8 +79,8 @@ public class LineCreator : MonoBehaviour
                 pg.SetPath(pg.pathCount - 1, rect);
             }
             activeLine.GetComponent<Rigidbody2D>().isKinematic = false;
-            if (GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().GameStatus == GameStatus.WAITING)
-                GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().GameStatus = GameStatus.PLAYING;
+            if (GameManager.GameStatus == GameStatus.WAITING)
+                GameManager.GameStatus = GameStatus.PLAYING;
         }
         else Destroy(activeLine);
         

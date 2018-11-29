@@ -18,20 +18,25 @@ public enum GameStatus
 public class GameManager : MonoBehaviour {
     public Text txtLevel,txtCountDown,txtTotalStar;
     public StarSlider starSlider;
-    public GameObject FullWaterEffect, EditorButton;
+    public GameObject FullWaterEffect, EditorButton,GiftBoxPanel,HintPanel;
+    public LineCreator lineCreator;
     [Header("Hint")]
     public GameObject HintLine;
     public Button UseHint, BuyHint;
     public Text HintNumTxt;
     public List<GameObject> listLevel;
-    public GameStatus GameStatus=GameStatus.WAITING;
+    public static GameStatus GameStatus=GameStatus.WAITING;
     public static bool showHint = false;
     public static int totalLevel = 84;
     int numCup = 0;
     List<LineRenderer> listHintLine = new List<LineRenderer>();
 	// Use this for initialization
 	void Start () {
-        //PlayerPrefs.SetInt("totalStar", 20);
+        GameStatus = GameStatus.WAITING;
+        if (PlayerPrefs.GetInt("countForGift", 0) == 2)
+        {
+            GiftBoxPanel.SetActive(true);
+        }
         txtTotalStar.text = PlayerPrefs.GetInt("totalStar", 0).ToString();
         txtLevel.text = PlayerPrefs.GetInt("curLevel", 1).ToString();
         Instantiate(listLevel[PlayerPrefs.GetInt("curLevel", 1) - 1], transform);
@@ -71,21 +76,105 @@ public class GameManager : MonoBehaviour {
     }
     public void giftBoxClick()
     {
-        StartCoroutine(giftBoxClickIEnumerator());
+        if (GameStatus == GameStatus.WAITING)
+            StartCoroutine(giftBoxClickIEnumerator());
+    }
+    public void cardClick(int i)
+    {
+        StartCoroutine(cardClickIE(i));
+    }
+    IEnumerator cardClickIE(int idx)
+    {
+        if (idx == 0)
+        {
+            PlayerPrefs.SetInt("totalStar", PlayerPrefs.GetInt("totalStar", 0) + 1);
+        }
+        if (idx == 1)
+        {
+            PlayerPrefs.SetInt("totalStar", PlayerPrefs.GetInt("totalStar", 0) + 5);
+        }
+        if (idx == 2)
+        {
+            PlayerPrefs.SetInt("hintNum", PlayerPrefs.GetInt("hintNum", 5) + 1);
+        }
+        txtTotalStar.text = PlayerPrefs.GetInt("totalStar", 0).ToString();
+        GiftBoxPanel.transform.GetChild(idx).GetComponent<Animator>().SetBool("isOpen", true);
+        for (int i = 0; i < 3; i++)
+        {
+            if (idx != i)
+            {
+                GiftBoxPanel.transform.GetChild(i).GetComponent<Button>().interactable = false;
+            }
+        }
+        yield return new WaitForSeconds(1f);
+        for (int i = 0; i < 3; i++)
+        {
+            if (idx != i)
+            {
+                GiftBoxPanel.transform.GetChild(i).GetComponent<Animator>().SetBool("isOpen", true);
+            }
+        }
+        yield return new WaitForSeconds(1f);
+        GiftBoxPanel.GetComponent<Image>().DOFade(0, 0.5f);
+        GiftBoxPanel.transform.GetChild(3).DOScale(0, 0.5f);
+        for (int i = 0; i < 3; i++)
+        { 
+            GiftBoxPanel.transform.GetChild(i).GetComponent<CanvasGroup>().DOFade(0, 0.5f);
+        }
+        yield return new WaitForSeconds(0.5f);
+        GameStatus = GameStatus.WAITING;
+        GiftBoxPanel.SetActive(false);
     }
     IEnumerator giftBoxClickIEnumerator()
     {
-        yield return new WaitForSeconds(0);
+        GameStatus = GameStatus.PAUSE;
+        PlayerPrefs.SetInt("countForGift", (PlayerPrefs.GetInt("countForGift", 0) + 1) % 3);
+        DOTween.Kill(lineCreator.Pencil.GetComponent<SpriteRenderer>());
+        lineCreator.Pencil.GetComponent<SpriteRenderer>().DOFade(0, 0.1f);
+        lineCreator.activeLine = null;
+        GiftBoxPanel.GetComponent<Image>().DOFade(1, 0.5f);
+        List<Vector3> cardPos = new List<Vector3>();
+        for (int i = 0; i < 3; i++)
+        {
+            GiftBoxPanel.transform.GetChild(i).gameObject.SetActive(true);
+            GiftBoxPanel.transform.GetChild(i).GetComponent<Image>().DOFade(0, 0.5f).From();
+            GiftBoxPanel.transform.GetChild(i).GetComponent<Button>().interactable = false;
+            cardPos.Add(GiftBoxPanel.transform.GetChild(i).position);
+            yield return new WaitForSeconds(0.1f);
+        }
+        yield return new WaitForSeconds(1f);
+        for (int i = 0; i < 3; i++)
+        {
+            GiftBoxPanel.transform.GetChild(i).GetComponent<Animator>().SetBool("isOpen", false);
+            yield return new WaitForSeconds(0.1f);
+        }
+        yield return new WaitForSeconds(1f);
+        for (int i = 0; i < 3; i++)
+        {
+            GiftBoxPanel.transform.GetChild(i).DOMove(GiftBoxPanel.transform.GetChild(1).position, 0.5f);
+        }
+        yield return new WaitForSeconds(1f);
+        for (int i = 0; i < 3; i++)
+        {
+            int c = Random.RandomRange(0, cardPos.Count);
+            GiftBoxPanel.transform.GetChild(i).DOMove(cardPos[c], 0.5f);
+            GiftBoxPanel.transform.GetChild(i).GetComponent<Button>().interactable = true;
+            cardPos.RemoveAt(c);
+        }
     }
     public void showHintBoard()
     {
-        if (PlayerPrefs.GetInt("hintNum", 5) == 0)
-            UseHint.interactable = false;
-        if (PlayerPrefs.GetInt("totalStar", 0) < 10)
-            BuyHint.interactable = false;
-        HintNumTxt.text = PlayerPrefs.GetInt("hintNum", 5).ToString();
-        Time.timeScale = 0;
-        GetComponent<AudioSource>().Pause();
+        if (GameStatus == GameStatus.PLAYING || GameStatus == GameStatus.WAITING)
+        {
+            if (PlayerPrefs.GetInt("hintNum", 5) == 0)
+                UseHint.interactable = false;
+            if (PlayerPrefs.GetInt("totalStar", 0) < 10)
+                BuyHint.interactable = false;
+            HintNumTxt.text = PlayerPrefs.GetInt("hintNum", 5).ToString();
+            HintPanel.GetComponent<Animator>().SetTrigger("hintIn");
+            Time.timeScale = 0;
+            GetComponent<AudioSource>().Pause();
+        }
     }
     public void hideHintBoard()
     {
@@ -112,10 +201,6 @@ public class GameManager : MonoBehaviour {
             txtTotalStar.text = PlayerPrefs.GetInt("totalStar", 0).ToString();
             HintNumTxt.text = PlayerPrefs.GetInt("hintNum", 5).ToString();
             UseHint.interactable = true;
-        }
-        else
-        {
-            
         }
 
     }
@@ -151,7 +236,7 @@ public class GameManager : MonoBehaviour {
         if (PlayerPrefs.GetInt("curLevel", 1) < totalLevel)
         {
             PlayerPrefs.SetInt("curLevel", PlayerPrefs.GetInt("curLevel", 1) + 1);
-            ReplayClick();
+            SceneManager.LoadScene("MainGame");
         }
         else
         {
@@ -165,7 +250,6 @@ public class GameManager : MonoBehaviour {
 
     public void ReplayClick()
     {
-        Debug.Log("replay");
         if (GameStatus == GameStatus.PLAYING||GameStatus == GameStatus.WAITING)
             SceneTransition.Instance.LoadScene("MainGame", TransitionType.FadeToBlack);
     }
@@ -184,6 +268,10 @@ public class GameManager : MonoBehaviour {
     }
     IEnumerator VictoryIEnumerator()
     {
+#if UNITY_EDITOR
+        lineCreator.SaveHintToPrefab();
+#endif
+
         if (PlayerPrefs.GetInt("curLevel", 1) == PlayerPrefs.GetInt("LevelOpen", 1))
             PlayerPrefs.SetInt("LevelOpen", PlayerPrefs.GetInt("LevelOpen", 1) + 1); //mở lv
         if (starSlider.starNum > PlayerPrefs.GetInt("star_lv" + PlayerPrefs.GetInt("curLevel", 1), 0))
@@ -191,6 +279,8 @@ public class GameManager : MonoBehaviour {
             PlayerPrefs.SetInt("totalStar", PlayerPrefs.GetInt("totalStar", 0) + starSlider.starNum - PlayerPrefs.GetInt("star_lv" + PlayerPrefs.GetInt("curLevel", 1), 0));
             txtTotalStar.text = PlayerPrefs.GetInt("totalStar", 0).ToString();
             PlayerPrefs.SetInt("star_lv" + PlayerPrefs.GetInt("curLevel", 1), starSlider.starNum); //Lưu sao
+            if(PlayerPrefs.GetInt("countForGift", 0)<2)
+                PlayerPrefs.SetInt("countForGift", PlayerPrefs.GetInt("countForGift", 0) + 1);
         }
         VictoryManager.numStar = starSlider.starNum;
         GameStatus = GameStatus.VICTORY;

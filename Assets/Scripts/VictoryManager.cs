@@ -15,12 +15,17 @@ public class VictoryManager : MonoBehaviour {
     {
         txtTotalStar.text = PlayerPrefs.GetInt("totalStar", 0).ToString();
         SceneTransition.Instance.Out();
+        if (Random.Range(0, 100) < 90)
+        {
+            AdManager.Ins.ShowInterstitial();
+        }
         txtLevel.text = PlayerPrefs.GetInt("curLevel", 1).ToString();
         for (int i = 0; i < numStar; i++)
         {
             StartCoroutine(StarExplosion(i));
             yield return new WaitForSeconds(0.3f);
         }
+        
     }
     private void Update()
     {
